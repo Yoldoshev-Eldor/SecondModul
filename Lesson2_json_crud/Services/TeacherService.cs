@@ -6,6 +6,7 @@ namespace Lesson2_json_crud.Services
     public class TeacherService
     {
         private string teacherFile;
+        private List<Teacher> _teachers;
         public TeacherService()
         {
             teacherFile = "../../../Data/Teacher.json";
@@ -13,6 +14,8 @@ namespace Lesson2_json_crud.Services
             {
                 File.WriteAllText(teacherFile, "[]");
             }
+            _teachers = new List<Teacher>();
+            _teachers = GetAllTeacher();
         }
         public bool CheekLogin(string login, string password)
         {
@@ -30,40 +33,37 @@ namespace Lesson2_json_crud.Services
         public Teacher AddTeacher(Teacher newTeacher)
         {
             newTeacher.Id = Guid.NewGuid();
-            var teacherList = GetTeachers();
-            teacherList.Add(newTeacher);
-            SaveData(teacherList);
+            _teachers.Add(newTeacher);
+            SaveData();
             return newTeacher;
         }
         public bool DeleteTeacher(Guid id)
-        {
-            var teacherList = GetTeachers();    
+        { 
             var deleteTeacher = GetById(id);
             if (deleteTeacher is null)
             {
                 return false;
             }
-            teacherList.Remove(deleteTeacher);
-            SaveData(teacherList) ;
+            _teachers.Remove(deleteTeacher);
+            SaveData() ;
             return true;
         }
         public bool UpdateTeacher(Teacher teacher)
         {
             var result = GetById(teacher.Id);
-            var teacherList = GetTeachers();
+
             if (result is null)
             {
                 return false;
             }
-            var index = teacherList.IndexOf(teacher);
-            teacherList[index] = teacher;
-            SaveData(teacherList) ;
+            var index = _teachers.IndexOf(teacher);
+            _teachers[index] = teacher;
+            SaveData();
             return true;
         }
         public Teacher GetById(Guid id)
         {
-            var teacherList = GetTeachers();
-            foreach (var teacher in teacherList)
+            foreach (var teacher in _teachers)
             {
                 if (teacher.Id == id)
                 {
@@ -72,9 +72,9 @@ namespace Lesson2_json_crud.Services
             }
             return null;
         }
-        private void SaveData(List<Teacher> teachers)
+        private void SaveData()
         {
-            var studentJson = JsonSerializer.Serialize(teachers);
+            var studentJson = JsonSerializer.Serialize(_teachers);
             File.WriteAllText(teacherFile, studentJson);
         }
         private List<Teacher> GetTeachers()

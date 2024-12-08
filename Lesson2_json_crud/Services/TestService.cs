@@ -6,48 +6,70 @@ namespace Lesson2_json_crud.Services
     public class TestService
     {
         private string testFilePath;
+        private List<Test> _tests;
         public TestService()
         {
-            testFilePath = "../../../Data/Tests.json";
+            testFilePath = "../../../Data/Test.json";
+
+            if (File.Exists(testFilePath) is false)
+            {
+                File.WriteAllText(testFilePath, "[]");
+            }
+
+            _tests = new List<Test>();
+            _tests = GetAllTests();
+        }
+        public bool ChekLogin (string login, string password)
+        {
+            var passChek = "student1";
+            var passLog = "student1";
+            if(login == passLog && password == passChek)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
         public Test AddTest(Test newTest)
         {
             newTest.Id = Guid.NewGuid();
-            var tests = GetTests();
-            tests.Add(newTest);
-            SaveData(tests);
+
+            _tests.Add(newTest);
+            SaveData();
             return newTest;
         }
         public bool UpdateTest(Guid id)
         {
             var updateTest = GetById(id);
-            var testsList = GetTests();
-            if (testsList is null)
+
+            if (updateTest is null)
             {
                 return false;
             }
-            var index = testsList.IndexOf(updateTest);
-            testsList[index] = updateTest;
-            SaveData(testsList);
+            var index = _tests.IndexOf(updateTest);
+            _tests[index] = updateTest;
+            SaveData();
             return true;
         }
         public bool DeleteTest(Guid id)
         {
-            var testList = GetTests();
+
             var deleteTest = GetById(id);
             if (deleteTest is null)
             {
                 return false;
             }
-            testList.Remove(deleteTest);
-            SaveData(testList);
+            _tests.Remove(deleteTest);
+            SaveData();
             return true;
 
         }
         public Test GetById(Guid id)
         {
-            var testsList = GetTests();
-            foreach (var test in testsList)
+
+            foreach (var test in _tests)
             {
                 if (test.Id == id)
                 {
@@ -56,16 +78,42 @@ namespace Lesson2_json_crud.Services
             }
             return null;
         }
-            private void SaveData(List<Test> tests)
+        public List<Test> GetRandomTests(int count)
+        {
+            if (count >= _tests.Count)
             {
-                var testJson = JsonSerializer.Serialize(tests);
-                File.WriteAllText(testFilePath, testJson);
+                return _tests;
             }
-            private List<Test> GetTests()
+
+            var randomTests = new List<Test>();
+            var rand = new Random();
+            for (var i = 0; i < count;)
             {
-                var testsJson = File.ReadAllText(testFilePath);
-                var testsList = JsonSerializer.Deserialize<List<Test>>(testsJson);
-                return testsList;
+                var option = rand.Next(0, _tests.Count);
+                if (randomTests.Contains(_tests[option]) is false)
+                {
+                    randomTests.Add(_tests[option]);
+                    i++;
+                }
             }
+
+            return randomTests;
+        }
+
+        private void SaveData()
+        {
+            var testJson = JsonSerializer.Serialize(_tests);
+            File.WriteAllText(testFilePath, testJson);
+        }
+        public List<Test> GetAllTests()
+        {
+            return GetTests();
+        }
+        private List<Test> GetTests()
+        {
+            var testsJson = File.ReadAllText(testFilePath);
+            var testsList = JsonSerializer.Deserialize<List<Test>>(testsJson);
+            return testsList;
         }
     }
+}
