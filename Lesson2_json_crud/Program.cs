@@ -42,7 +42,8 @@ namespace Lesson2_json_crud
         }
         public static void DirectorMenu()
         {
-            var directorService = new TeacherService();
+
+            ITeacherService directorService = new TeacherService();
             while (true)
             {
                 Console.Write("Enter Login : ");
@@ -171,7 +172,7 @@ namespace Lesson2_json_crud
         }
         public static void TeacherMenu()
         {
-            var teacherService = new StudentService();
+            IStudentService teacherService = new StudentService();
             while (true)
             {
                 Console.Write("Enter Login : ");
@@ -185,8 +186,8 @@ namespace Lesson2_json_crud
                 {
                     while (true)
                     {
-                        var testService = new TestService();
-                        var studentService = new StudentService();
+                        ITestService testService = new TestService();
+                        IStudentService studentService = new StudentService();
                         Console.WriteLine("1. Add Student : ");
                         Console.WriteLine("2. Delete Student : ");
                         Console.WriteLine("3. Update Student : ");
@@ -417,7 +418,7 @@ namespace Lesson2_json_crud
         }
         public static void StudentMenu()
         {
-            var studentServise = new TestService();
+            ITestService studentServise = new TestService();
             while (true)
             {
                 Console.Write("Enter Login : ");

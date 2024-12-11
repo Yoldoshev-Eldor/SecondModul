@@ -3,7 +3,7 @@ using System.Text.Json;
 
 namespace Lesson2_json_crud.Services
 {
-    public class TestService
+    public class TestService : ITestService
     {
         private string testFilePath;
         private List<Test> _tests;

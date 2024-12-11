@@ -3,7 +3,8 @@ using System.Text.Json;
 
 namespace Lesson2_json_crud.Services
 {
-    public class TeacherService
+    public class TeacherService : ITeacherService
+
     {
         private string teacherFile;
         private List<Teacher> _teachers;
